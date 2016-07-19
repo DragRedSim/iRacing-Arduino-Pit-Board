@@ -1,10 +1,13 @@
 // This switch provides compilation modes for 320x240 and 480x320 screens
 // Enable the HDGFX switch if you are compiling for 480x320
 
+// The TFT_CONTROLLER switch is for certain 3.5" LCD screens. Only enable it if it doesn't otherwise work.
+
 #define HDGFX true
+#define TFT_CONTROLLER 0x1511 //options are 0x0000 (for everything else), 0x1511 or 0x9486 (based on the identifier of your screen).
 
 #include <Adafruit_GFX.h>	// Core graphics library
-#if HDGFX == true
+#if TFT_CONTROLLER != 0x0000
 	#include <MCUFRIEND_kbv.h>
 #else
 	#include <Adafruit_TFTLCD.h> // Hardware-specific library
@@ -34,7 +37,7 @@
 	#define ROW_2_INFO_TXT_YVAL			97
 	#define ROW_4_HDR_TXT_YVAL			255
 	#define ROW_4_INFO_TXT_YVAL			281
-	#define INFO_TXT_SIZE			    	3
+	#define INFO_TXT_SIZE			    3
 #else
 	#define ROW_1_HDR_TXT_YVAL			2
 	#define ROW_1_INFO_TXT_YVAL			19
@@ -42,10 +45,10 @@
 	#define ROW_2_INFO_TXT_YVAL			68
 	#define ROW_4_HDR_TXT_YVAL			192
 	#define ROW_4_INFO_TXT_YVAL			209
-	#define INFO_TXT_SIZE		    		2
+	#define INFO_TXT_SIZE		    	2
 #endif
 
-#if HDGFX == true
+#if TFT_CONTROLLER != 0x0000
 	MCUFRIEND_kbv tft;
 #else
 	Adafruit_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
@@ -77,6 +80,7 @@
 // PIT STOP SCREEN VARIABLES
 
 	String lastPitStopOnLap = "";
+	String lastRemainString = "";
 	String optRepairLeft = "";
 	String pittedUnderFlag = "";
 	String lapsOnTires = "";
@@ -96,17 +100,19 @@ void setup(void)
 	// OPEN SERIAL CONNECTION
 	Serial.begin(250000);
 	tft.reset();
-	#if HDGFX == true
-		uint16_t identifier = 0x9486;
+	#if TFT_CONTROLLER != 0x0000
+		uint16_t identifier = TFT_CONTROLLER;
 	#else
 		uint16_t identifier = 0x9325;
 	#endif
 	tft.begin(identifier);
-	#if HDGFX
-		tft.invertDisplay(true);
+	#if TFT_CONTROLLER != 0x0000
 		tft.setRotation(1);
 	#else
 		tft.setRotation(3);
+	#endif
+	#if TFT_CONTROLLER == 0x9486
+		tft.invertDisplay(true);
 	#endif
 	tft.setTextColor(WHITE, BLACK);
 	resetScreen();
@@ -356,7 +362,7 @@ void updateRemainingLaps(String remainingLaps)
 	int isTimeNotLaps = remainingLaps.indexOf(':');
 	if (isTimeNotLaps == -1)							// ':' does not exist in remaining laps. eg: Unlimited or an Int
 	{
-		if (remainingLaps.toInt() == 9)					// 9 laps remaining in the race
+		if (remainingLaps.toInt() == 9 || lastRemainString == "Infinite")	// 9 laps remaining in the race, or clear if changing from Infinite
 		{
 
 			#if HDGFX == true
@@ -367,6 +373,7 @@ void updateRemainingLaps(String remainingLaps)
 			tft.println("        ");		// clear over the display so that the double-digit numbers can't be seen
 		}
 	}
+	lastRemainString == remainingLaps;
 	tft.setCursor(calculateStringStartPosition(remainingLaps, fieldLimitLeft, fieldLimitRight, textSize), ROW_1_INFO_TXT_YVAL);
 	tft.println(remainingLaps);
 }
