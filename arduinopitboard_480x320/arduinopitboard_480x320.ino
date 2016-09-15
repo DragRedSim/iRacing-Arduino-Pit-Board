@@ -1,10 +1,10 @@
-// This switch provides compilation modes for 320x240 and 480x320 screens
 // Enable the HDGFX switch if you are compiling for 480x320
-
 // The TFT_CONTROLLER switch is for certain 3.5" LCD screens. Only enable it if it doesn't otherwise work.
 
 #define HDGFX true
-#define TFT_CONTROLLER 0x1511 //options are 0x0000 (for everything else), 0x1511 or 0x9486 (based on the identifier of your screen).
+#define TFT_CONTROLLER 0x9486 //options are 0x0000 (for everything else), 0x1511 or 0x9486 (based on the identifier of your screen).
+//Emree - 0x1511
+//David - 0x9486
 
 #include <Adafruit_GFX.h>	// Core graphics library
 #if TFT_CONTROLLER != 0x0000
