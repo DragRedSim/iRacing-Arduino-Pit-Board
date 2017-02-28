@@ -1,5 +1,14 @@
 ### Install Procedure
 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=_KcanO0e72s
+" target="_blank"><img src="http://img.youtube.com/vi/_KcanO0e72s/hqdefault.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=R-eyylf9FOw
+" target="_blank"><img src="http://img.youtube.com/vi/R-eyylf9FOw/hqdefault.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+
+
 #### Hardware
 1. Clip TFT screen into Arduino Uno
 2. Insert USB cable into device and computer
@@ -26,7 +35,7 @@
 8. Identify LCD Driver Chip
   * If the serial monitor says Unknown LCD driver chip: 0, you will manually need to test each driver chip identifier
 9. Download the iRacing Arduino Pit Board TFT Front End.ino sketch to your computer and open it in the Arduino IDE
-10. Ensure line 59 in the Arduino front end uses the correct identifier for your TFT Screen from step 8.  
+10. Ensure line 68 in the Arduino front end uses the correct identifier for your TFT Screen from step 8.  
   * eg: uint16_t identifier = 0x9325;
   * If Unknown lcd chip, test using each of the following until the sketch displays correctly
   * 0x9325, 0x9328, 0x7575, 0x9341 or 0x8357
@@ -39,12 +48,11 @@ Note: Once successfully installing and seeing the basic layout, the Arduino IDE 
 1. Download the current executable file from the [releases section](https://github.com/Grimzentide/iRacing-Arduino-Pit-Board/releases)
 2. Unzip the file to a location of your choice
 3. In Windows devices and printers, confirm the COM port number for your Arduino
-4. Open a command prompt and run the exe file with the com port argument
-  * eg: arduinopitboard_v0.8.exe com7
-  * eg: arduinopitboard_v0.8.exe com7 -gallons
-  * It is also possible to use [iAppStarter](http://www.fulhack.org/iappstarter/) to launch the pitboard back end -  [screenshot](http://i.imgur.com/2VIN3TU.png)
+4. Download [iAppStarter](http://www.fulhack.org/iappstarter/) and then launch it
+5. Click browse and find the executable you downloaded and unzipped in [iAppStarter](http://www.fulhack.org/iappstarter/)
+6. Add the com port from step 3 in the arguments field and any other functions you desire
+  * eg: arduinopitboard_v2.8.exe com7
+  * eg: arduinopitboard_v2.8.exe com7 -gallons
 
-#### What to do to actually use it all the time.
-1. If using iAppStarter, simply ensure the arduino is plugged into a USB port and launch iRacing
-2. If using a command prompt, run the exe (as shown in step 4 above) and launch iRacing.
+Example screenshot
 ![iAppStarter](http://i.imgur.com/C6O29zl.png)
