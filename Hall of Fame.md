@@ -2,6 +2,8 @@
 
 ##### The following people have been kind enough to donate money to this project.
 
+<a href="https://www.paypal.me/BrockCremer"><img src="https://www.paypal.com/en_GB/i/btn/x-click-butcc-donate.gif"></a>
+
 | Inductee          | Club     |
 |-------------------|----------|
 | Anthony Hartfield | UK and I |
@@ -12,3 +14,18 @@
 | Robert Pritchard  | Australia / NZ |
 | Christian Starkow | DE-AT-CH |
 | Franco Scuri | Italia |
+| Paul Searle | UK and I |
+| Marcos Otero Alvarez | Iberia |
+| Bryan Clark | TBD |
+| Mark Hertzog | California Club |
+| Mark Pickford | UK and I |
+| Finley Barrass | UK and I |
+| David Ross Smith | Australia / NZ |
+| Jeffrey Brown | US |
+| Stephen Westrip | TBD |
+| iRacing Fantasy Series | US |
+| Ian Scott | TBD |
+| Bruce Jones | TBD |
+| Jake Robson | UK and I |
+| Christophe Guillouzouic | TBD |
+| Sven Triller | TBD |
