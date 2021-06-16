@@ -30,6 +30,8 @@
 #define WHITE           0xFFFF
 #define ORANGE          0xFD20
 
+#define USB_ON_RIGHT false
+
 #if HDGFX == true
 	#define ROW_1_HDR_TXT_YVAL			4
 	#define ROW_1_INFO_TXT_YVAL			30
@@ -76,6 +78,7 @@
 	int textSize = INFO_TXT_SIZE;
 	int fieldLimitLeft;
 	int fieldLimitRight;
+	int currScreenMode = 1; // 1 = default (on-track), 2 = pitlane
 
 // PIT STOP SCREEN VARIABLES
 
@@ -106,13 +109,23 @@ void setup(void)
 		uint16_t identifier = 0x9325;
 	#endif
 	tft.begin(identifier);
-	#if TFT_CONTROLLER != 0x0000
-		tft.setRotation(1);
-	#else
-		tft.setRotation(3);
-	#endif
+  #if USB_ON_RIGHT == FALSE
+  //left side USB
+  	#if TFT_CONTROLLER != 0x0000
+  		tft.setRotation(1);
+  	#else
+  		tft.setRotation(3);
+  	#endif
+  #else
+    //right side USB
+    #if TFT_CONTROLLER != 0x0000
+      tft.setRotation(3);
+    #else
+      tft.setRotation(1);
+    #endif
+  #endif  
 	#if TFT_CONTROLLER == 0x9486
-		tft.invertDisplay(true);
+		//tft.invertDisplay(true);
 	#endif
 	tft.setTextColor(WHITE, BLACK);
 	resetScreen();
@@ -264,6 +277,11 @@ void loop(void)
 
 int updateSessionLaps(String sessionLaps, int updateTitleSessionTime)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	#if HDGFX == true
 	fieldLimitLeft = 4;
 	fieldLimitRight = 158;
@@ -324,6 +342,11 @@ int updateSessionLaps(String sessionLaps, int updateTitleSessionTime)
 
 void updateCompletedLaps(String completedLaps)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	// COMPLETED LAPS
 	tft.setTextSize(textSize);
 	#if HDGFX == true
@@ -349,6 +372,11 @@ void updateCompletedLaps(String completedLaps)
 
 void updateRemainingLaps(String remainingLaps)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	tft.setTextSize(textSize);
 	#if HDGFX == true
 	fieldLimitLeft = 321;
@@ -380,6 +408,11 @@ void updateRemainingLaps(String remainingLaps)
 
 String updatePitOnLap(String pitOnLap, String lastPitOnLap)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	tft.setTextColor(YELLOW, BLACK);
 
 	tft.setTextSize(textSize);
@@ -409,6 +442,11 @@ String updatePitOnLap(String pitOnLap, String lastPitOnLap)
 
 void updateFuelRequired(String fuelRequired)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	tft.setTextSize(textSize);
 
 	#if HDGFX == true
@@ -442,6 +480,11 @@ void updateFuelRequired(String fuelRequired)
 
 int updateLapsUntilEmpty(String lapsUntilEmpty, int clearlapsUntilEmptyTag)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	tft.setTextSize(textSize);
 	#if HDGFX == true
 	fieldLimitLeft = 321;
@@ -484,6 +527,11 @@ int updateLapsUntilEmpty(String lapsUntilEmpty, int clearlapsUntilEmptyTag)
 
 int updateFuelRemaining(String fuelRemaining, int fiveLapAvg, int clearFuelRemainingTag)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	// TELEMETRY VALUE DEFAULTS
 
 	tft.setTextSize(textSize);
@@ -530,6 +578,11 @@ int updateFuelRemaining(String fuelRemaining, int fiveLapAvg, int clearFuelRemai
 
 void updateFiveLapAvg(String fiveLapAvg)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	tft.setTextSize(textSize);
 
 	#if HDGFX == true
@@ -563,6 +616,11 @@ void updateFiveLapAvg(String fiveLapAvg)
 
 void updateRaceAVG(String raceAVG)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	// TELEMETRY VALUE DEFAULTS
 
 	tft.setTextSize(textSize);
@@ -598,6 +656,11 @@ void updateRaceAVG(String raceAVG)
 
 void updateInfoMessage(String infoMessage1, String infoMessage2, String infoMessage3, String infoMessage4, String infoMessage5)
 {
+	if (currScreenMode == 2) // wrong mode, redraw!
+	{
+		resetScreen();
+	}
+	
 	// TELEMETRY VALUE DEFAULTS
 
 	tft.setTextSize(2);
@@ -752,6 +815,7 @@ void updateInfoMessage(String infoMessage1, String infoMessage2, String infoMess
 
 void resetScreen()
 {
+	currScreenMode = 1;
 	tft.setTextColor(LIGHTGREY, BLACK);
 	tft.setTextSize(1);
 
@@ -945,6 +1009,8 @@ void flashRed()
 
 void pitLaneScreen()
 {
+	currScreenMode = 2;
+	
 	tft.setTextColor(LIGHTGREY, BLACK);
 	tft.setTextSize(1);
 
@@ -1073,7 +1139,12 @@ void pitLaneScreen()
 
 void updateLastPitStopOnLap(String lastPitStopOnLap)
 {
-	// LAST PIT STOP ON LAP VARIBLE
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
+	
+		// LAST PIT STOP ON LAP VARIBLE
 
 	tft.setTextSize(textSize);
 
@@ -1091,6 +1162,10 @@ void updateLastPitStopOnLap(String lastPitStopOnLap)
 
 void updateOptRepairLeft(String optRepairLeft)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// FAST REPAIR VARIABLE
 
 	tft.setTextSize(textSize);
@@ -1109,6 +1184,10 @@ void updateOptRepairLeft(String optRepairLeft)
 
 void updatePittedUnderFlag(String pittedUnderFlag)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// PITTED UNDER FLAG
 
 	tft.setTextSize(textSize);
@@ -1132,6 +1211,10 @@ void updatePittedUnderFlag(String pittedUnderFlag)
 
 void updateLapsOnTires(String lapsOnTires)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// LAPS ON TIRES VARIBLE
 
 	tft.setTextSize(textSize);
@@ -1151,6 +1234,10 @@ void updateLapsOnTires(String lapsOnTires)
 
 void updateFuelRequiredAtPitstopVarPitScreen(String fuelRequiredAtPitstopVarPitScreen)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// FUEL TO DROP VARIBLE
 
 	tft.setTextSize(textSize);
@@ -1170,6 +1257,10 @@ void updateFuelRequiredAtPitstopVarPitScreen(String fuelRequiredAtPitstopVarPitS
 
 void updateAverageFuelBurnStint(String averageFuelBurnStint)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// FUEL BURN AVG STINT
 
 	tft.setTextSize(textSize);
@@ -1189,6 +1280,10 @@ void updateAverageFuelBurnStint(String averageFuelBurnStint)
 
 void updateFuelToLeaveWith(String fuelToLeaveWith)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// FUEL TO LEAVE WITH
 
 	tft.setTextSize(textSize);
@@ -1208,6 +1303,10 @@ void updateFuelToLeaveWith(String fuelToLeaveWith)
 
 void updateFuelAdded(String fuelAdded)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// FUEL ADDED VARIBLE
 
 	tft.setTextSize(textSize);
@@ -1226,6 +1325,10 @@ void updateFuelAdded(String fuelAdded)
 
 void updateFastRepair(String fastRepair)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// FAST REPAIR VARIABLE
 
 	tft.setTextSize(textSize);
@@ -1245,6 +1348,10 @@ void updateFastRepair(String fastRepair)
 
 void updateLFTireChange(String lfTireChange)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// LF TEXT
 
 	tft.setTextSize(textSize);
@@ -1283,6 +1390,10 @@ void updateLFTireChange(String lfTireChange)
 
 void updateRFTireChange(String rfTireChange)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// RF TEXT
 
 	tft.setTextSize(textSize);
@@ -1320,6 +1431,10 @@ void updateRFTireChange(String rfTireChange)
 
 void updateLRTireChange(String lrTireChange)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// LR TEXT
 
 	tft.setTextSize(textSize);
@@ -1358,6 +1473,10 @@ void updateLRTireChange(String lrTireChange)
 
 void updateRRTireChange(String rrTireChange)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	// RR TEXT
 
 	tft.setTextSize(textSize);
@@ -1397,6 +1516,10 @@ void updateRRTireChange(String rrTireChange)
 
 void updateWear(String wear)
 {
+	if (currScreenMode == 1) // wrong mode, redraw!
+	{
+		pitLaneScreen();
+	}
 	int wearWheel;
 	int wearLeft;
 	int wearMiddle;
